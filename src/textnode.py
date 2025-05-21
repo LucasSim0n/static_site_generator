@@ -26,12 +26,3 @@ class TextNode:
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
-
-
-def main():
-    poc = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(poc)
-
-
-if __name__ == "__main__":
-    main()
