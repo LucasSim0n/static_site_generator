@@ -1,7 +1,7 @@
 import unittest
 
+from textFuncs import text_node_to_html_node
 from textnode import *
-from type_conv import text_node_to_html_node
 
 
 class TestHtmlNode(unittest.TestCase):
