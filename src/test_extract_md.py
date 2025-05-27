@@ -1,6 +1,6 @@
 import unittest
 
-from textFuncs import extract_markdown_images, extract_markdown_links
+from text_funcs import extract_markdown_images, extract_markdown_links
 
 
 class TestMdExtracction(unittest.TestCase):

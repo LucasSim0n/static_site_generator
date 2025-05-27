@@ -1,7 +1,8 @@
 import unittest
 
-from textFuncs import *
-from textnode import TextNode, TextType
+from block_funcs import markdown_to_blocks
+from text_funcs import *
+from text_node import TextNode, TextType
 
 
 class TestSplit(unittest.TestCase):
@@ -75,6 +76,26 @@ class TestSplit(unittest.TestCase):
             "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         )
         self.assertListEqual(expected, nodes)
+
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
 
 
 if __name__ == "__main__":
