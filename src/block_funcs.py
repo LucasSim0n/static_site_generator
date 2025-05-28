@@ -3,19 +3,18 @@ import re
 from block_type import BlockType
 from html_node import *
 from text_funcs import text_node_to_html_node, text_to_textnodes
-from text_node import TextNode, TextType
 
 
 def block_to_block_type(block):
-    if re.match(r"^#{1,6}\s", block):  # encabezados tipo #, ##, etc.
+    if re.match(r"^#{1,6}\s", block):
         return BlockType.HEADING
-    elif re.match(r"^```", block):  # bloques de código
+    elif re.match(r"^```", block):
         return BlockType.CODE
-    elif re.match(r"^>", block):  # citas
+    elif re.match(r"^>", block):
         return BlockType.QUOTE
-    elif re.match(r"^-", block):  # lista no ordenada
+    elif re.match(r"^-", block):
         return BlockType.UNORDERED_LIST
-    elif re.match(r"^\d+\.", block):  # lista ordenada
+    elif re.match(r"^\d+\.", block):
         return BlockType.ORDERED_LIST
     else:
         return BlockType.PARAGRAPH
@@ -33,8 +32,18 @@ def markdown_to_blocks(markdown):
 
 
 def get_list_html(block):
+
+    list_elements = []
+
     parts = block.split("\n")
-    list_elements = list(map(lambda x: f"<li>{x}</li>", parts))
+    stripped = list(map(lambda x: x.strip("0123456789.- "), parts))
+    treated = list(map(text_to_textnodes, stripped))
+
+    for element in treated:
+        list_elements.append(
+            ParentNode("li", [text_node_to_html_node(x) for x in element])
+        )
+
     return list_elements
 
 
@@ -57,7 +66,7 @@ def text_to_children(text, b_type):
                     break
                 head_type += 1
 
-            return LeafNode(text, f"h{head_type}")
+            return LeafNode(text[head_type + 1 :], f"h{head_type}")
 
         case BlockType.UNORDERED_LIST:
             list_elements = get_list_html(text)
@@ -68,7 +77,7 @@ def text_to_children(text, b_type):
             return ParentNode("ol", list_elements)
 
         case BlockType.QUOTE:
-            return LeafNode(text, "blockquote")
+            return LeafNode(text[2:], "blockquote")
 
 
 def markdown_to_html_node(markdown):
@@ -82,3 +91,11 @@ def markdown_to_html_node(markdown):
         child_blocks.append(child)
 
     return ParentNode("div", child_blocks)
+
+
+def extract_title(markdown):
+    header = re.findall(r"^#\s(.*)", markdown)
+    if not header:
+        raise Exception("No h1 found")
+
+    return header[0]

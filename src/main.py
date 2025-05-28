@@ -1,9 +1,9 @@
-from text_node import TextNode, TextType
+from files_funcs import copy_resources, generate_pages_recursive
 
 
 def main():
-    poc = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-    print(poc)
+    copy_resources()
+    generate_pages_recursive("content", "template.html", "public")
 
 
 if __name__ == "__main__":

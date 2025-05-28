@@ -28,7 +28,7 @@ class LeafNode(HTMLNode):
             case None:
                 return self.value
             case "a":
-                return f"<a {self.props_to_html()}>{self.value}</a>"
+                return f"<a{self.props_to_html()}>{self.value}</a>"
             case "img":
                 return f"<img {self.props_to_html()}/>"
             case _:
