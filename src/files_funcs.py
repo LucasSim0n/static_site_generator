@@ -42,7 +42,7 @@ def copy_resources(from_path, dest_path):
         shutil.copy(file, new_file)
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"generating page from {from_path} to {dest_path} using {template_path}")
 
     with open(from_path, "r") as f:
@@ -53,13 +53,18 @@ def generate_page(from_path, template_path, dest_path):
     content = markdown_to_html_node(source).to_html()
     title = extract_title(source)
 
-    page = template.replace("{{ Title }}", title).replace("{{ Content }}", content)
+    page = (
+        template.replace("{{ Title }}", title)
+        .replace("{{ Content }}", content)
+        .replace('href="/', f'href="{basepath}')
+        .replace('src="/', f'src="{basepath}')
+    )
 
     with open(dest_path, "w") as dest:
         dest.write(page)
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
 
     for dir in get_nested_dirs(dir_path_content):
         new_dir = dir.replace(dir_path_content, dest_dir_path)
@@ -69,4 +74,4 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         print(file)
         if file[-3:] == ".md":
             target = file.replace(dir_path_content, dest_dir_path)
-            generate_page(file, template_path, f"{target[:-3]}.html")
+            generate_page(file, template_path, f"{target[:-3]}.html", basepath)
