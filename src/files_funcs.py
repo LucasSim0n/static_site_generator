@@ -27,18 +27,18 @@ def get_nested_dirs(path):
     return dirs
 
 
-def copy_resources():
-    shutil.rmtree("public", ignore_errors=True)
-    os.mkdir("public")
-    files = get_nested_files("static")
-    dirs = get_nested_dirs("static")
+def copy_resources(from_path, dest_path):
+    shutil.rmtree(dest_path, ignore_errors=True)
+    os.mkdir(dest_path)
+    files = get_nested_files(from_path)
+    dirs = get_nested_dirs(from_path)
 
     for dir in dirs:
-        new_dir = dir.replace("static", "public")
+        new_dir = dir.replace(from_path, dest_path)
         os.mkdir(new_dir)
 
     for file in files:
-        new_file = file.replace("static", "public")
+        new_file = file.replace(from_path, dest_path)
         shutil.copy(file, new_file)
 
 
